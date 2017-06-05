@@ -1,2 +1,2 @@
-#include "XtremeServ.rc"
-CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "XtremeServ.manifest"
+#include "QServWindows.rc"
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "QServWindows.manifest"

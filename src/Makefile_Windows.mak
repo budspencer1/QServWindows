@@ -1,6 +1,9 @@
+# new windows makefile by BudSpencer 
+
+
 ENET_USE_SYSTEM_LIBS=false
 
-#tools used for compiling
+
 CXX=i686-w64-mingw32-gcc 
 MV=mv                                                                           
 WINDRES=i686-w64-mingw32-windres
@@ -16,8 +19,6 @@ ifeq (,$(findstring -pg,$(CXXFLAGS)))
   STRIP=strip
 endif
 endif
-
-#includes
 
 SERVER_LIBS= -lz.dll -lgcc -lstdc++
 
