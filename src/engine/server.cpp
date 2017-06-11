@@ -878,7 +878,7 @@ static void setupconsole()
     SetConsoleCtrlHandler(consolehandler, TRUE);
     conwindow = GetConsoleWindow();
     SetConsoleTitle(apptip);
-    SendMessage(conwindow, WM_SETICON, ICON_SMALL, (LPARAM)appicon);
+    //SendMessage(conwindow, WM_SETICON, ICON_SMALL, (LPARAM)appicon);
     SendMessage(conwindow, WM_SETICON, ICON_BIG, (LPARAM)appicon);
     outhandle = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO coninfo;
@@ -900,50 +900,50 @@ enum
 
 static LRESULT CALLBACK handlemessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    switch(uMsg)
-    {
-        case WM_APP:
-            SetForegroundWindow(hWnd);
-            switch(lParam)
-        {
-            case WM_MOUSEMOVE:
-                break;
-            case WM_LBUTTONUP:
-            case WM_RBUTTONUP:
-            {
-                POINT pos;
-                GetCursorPos(&pos);
-                TrackPopupMenu(appmenu, TPM_CENTERALIGN|TPM_BOTTOMALIGN|TPM_RIGHTBUTTON, pos.x, pos.y, 0, hWnd, NULL);
-                PostMessage(hWnd, WM_NULL, 0, 0);
-                break;
-            }
-        }
-            return 0;
-        case WM_COMMAND:
-            switch(LOWORD(wParam))
-        {
-            case MENU_OPENCONSOLE:
-                setupconsole();
-                if(conwindow) ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_HIDECONSOLE, "Hide Console");
-                break;
-            case MENU_SHOWCONSOLE:
-                ShowWindow(conwindow, SW_SHOWNORMAL);
-                ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_HIDECONSOLE, "Hide Console");
-                break;
-            case MENU_HIDECONSOLE:
-                ShowWindow(conwindow, SW_HIDE);
-                ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_SHOWCONSOLE, "Show Console");
-                break;
-            case MENU_EXIT:
-                PostMessage(hWnd, WM_CLOSE, 0, 0);
-                break;
-        }
-            return 0;
-        case WM_CLOSE:
-            PostQuitMessage(0);
-            return 0;
-    }
-    return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	switch(uMsg)
+	{
+		case WM_APP:
+			SetForegroundWindow(hWnd);
+			switch(lParam)
+			{
+				//case WM_MOUSEMOVE:
+				//	break;
+				case WM_LBUTTONUP:
+				case WM_RBUTTONUP:
+				{
+					POINT pos;
+					GetCursorPos(&pos);
+					TrackPopupMenu(appmenu, TPM_CENTERALIGN|TPM_BOTTOMALIGN|TPM_RIGHTBUTTON, pos.x, pos.y, 0, hWnd, NULL);
+					PostMessage(hWnd, WM_NULL, 0, 0);
+					break;
+				}
+			}
+			return 0;
+		case WM_COMMAND:
+			switch(LOWORD(wParam))
+			{
+                case MENU_OPENCONSOLE:
+					setupconsole();
+					if(conwindow) ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_HIDECONSOLE, "Hide Console");
+                    break;
+				case MENU_SHOWCONSOLE:
+					ShowWindow(conwindow, SW_SHOWNORMAL);
+					ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_HIDECONSOLE, "Hide Console"); 
+					break;
+				case MENU_HIDECONSOLE:
+					ShowWindow(conwindow, SW_HIDE);
+					ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_SHOWCONSOLE, "Show Console");
+					break;
+				case MENU_EXIT:
+					PostMessage(hWnd, WM_CLOSE, 0, 0);
+					break;
+			}
+			return 0;
+		case WM_CLOSE:
+			PostQuitMessage(0);
+			return 0;
+	}
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 static void setupwindow(const char *title)
@@ -959,7 +959,7 @@ static void setupwindow(const char *title)
     AppendMenu(appmenu, MF_STRING, MENU_OPENCONSOLE, "Open Console");
     AppendMenu(appmenu, MF_SEPARATOR, 0, NULL);
 	AppendMenu(appmenu, MF_STRING, MENU_EXIT, "Exit");
-	SetMenuDefaultItem(appmenu, 0, FALSE);
+	//SetMenuDefaultItem(appmenu, 0, FALSE);
 
 	WNDCLASS wc;
 	memset(&wc, 0, sizeof(wc));
@@ -982,7 +982,6 @@ static void setupwindow(const char *title)
 
     if(!setupsystemtray(WM_APP)) fatal("failed adding to system tray");
 }
-
 
 static char *parsecommandline(const char *src, vector<char *> &args)
 {
@@ -1009,9 +1008,17 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 {
     vector<char *> args;
     char *buf = parsecommandline(GetCommandLine(), args);
-    appinstance = hInst;
+	appinstance = hInst;
+#ifdef STANDALONE
+    int standalonemain(int argc, char **argv);
+    int status = standalonemain(args.length()-1, args.getbuf());
+    #define main standalonemain
+#else
+    SDL_SetModuleHandle(hInst);
+    int status = SDL_main(args.length()-1, args.getbuf());
+#endif
     delete[] buf;
-    exit(0);
+    exit(status);
     return 0;
 }
 

@@ -1,4 +1,4 @@
-# new windows makefile by BudSpencer 
+# new windows makefile by BudSpencer (2017)
 
 
 ENET_USE_SYSTEM_LIBS=false
@@ -7,7 +7,7 @@ ENET_USE_SYSTEM_LIBS=false
 CXX=i686-w64-mingw32-gcc 
 MV=mv                                                                           
 WINDRES=i686-w64-mingw32-windres
-SERVER_NAME=QServWindows.exe
+SERVER_NAME=QServ_Windows.exe
 CXXFLAGS= -fpermissive -fomit-frame-pointer -Wall -fsigned-char -DSTANDALONE -static -Wl,-subsystem,windows
 SERVER_INCLUDES= -I/usr/i686-w64-mingw32/include/ $(INCLUDES)  
 SERVER_LIBS= -lz.dll -lgcc -lstdc+
@@ -102,6 +102,6 @@ clean: clean-enet
 $(SERVER_OBJS): CXXFLAGS += $(SERVER_INCLUDES)
 
 server: libenet $(SERVER_OBJS)
-	$(WINDRES) -I res -i res/Windows.rc -J rc -o res/XtremeServ.res -O coff
-	$(CXX) $(CXXFLAGS) -o $(SERVER_NAME) res/XtremeServ.res $(SERVER_OBJS) $(SERVER_LIBS)
+	$(WINDRES) -I res -i res/Windows.rc -J rc -o res/QServWindows.res -O coff
+	$(CXX) $(CXXFLAGS) -o $(SERVER_NAME) res/QServWindows.res $(SERVER_OBJS) $(SERVER_LIBS)
 	$(MV) $(SERVER_NAME) ../$(SERVER_NAME)

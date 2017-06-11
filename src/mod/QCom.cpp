@@ -57,8 +57,15 @@ namespace server {
         ncommand("loadmap", "\f7Loads a map stored on the server. Usage #loadmap <mapname>", PRIV_ADMIN, loadmap_cmd, 1);
         //ncommand("owords", "View list of offensive words. Usage: #owords",PRIV_NONE, owords_cmd, 0);
         //ncommand("olangfilter", "Turn the offensive language filter on or off. Usage: #olang <off/on> (0/1) and #olang to see if it's activated", PRIV_MASTER, olangfilter_cmd, 1);
+		ncommand("quit", "\f7This command allows you to quit (shutdown) the server.", PRIV_ADMIN, quit_cmd, 0); // QServ Windows
     }
     
+	// (C) 2017 BudSpencer [QServ Windows]
+	QSERV_CALLBACK quit_cmd(p) {
+		server::sendservmsg("\f3INFO: \f7Server will shutdown now ...");
+		exit(0);
+	};
+		
     QSERV_CALLBACK loadmap_cmd(p) {
         if(strlen(fulltext) > 0) {
             server::loadmap(fulltext);
