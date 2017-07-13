@@ -1,6 +1,7 @@
 // server.cpp: little more than enhanced multicaster
 // runs dedicated or as client coroutine
 // includes threading for QServ and IRC, and geoip database initaliziation 
+// BudSpencer: I don't really know why I can't open the popup-menu under Windows (TODO or smth.)
 
 #include "QServ.h"
 
